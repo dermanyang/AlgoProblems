@@ -19,15 +19,16 @@ def twoSum(nums, sum):
     dict = {}
     #   where i is the index, and val is the value at that index
     for i, val in enumerate(nums):
-
         if val in dict:
             return (i, dict[val])
         else:
             compliment = sum - val
             dict.update({compliment: i})
+    #if code reached here, no pair has been found
+    return "no pair found"
 
 #driver code
 nums = [2,7,11,15]
-target = 9
+target = 1
 
 print(twoSum(nums, target))
