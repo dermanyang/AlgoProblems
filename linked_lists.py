@@ -11,13 +11,11 @@ class linkedList:
         self.tail = None
         self.length = 0
     def display(self):
-        elements = []
         curNode = self.head
-        while curNode:
-            elements.append(curNode.data)
+        while (curNode):
+            print(curNode.data, end =" ")
             curNode = curNode.next
-        print (elements, "length=", len(elements))
-        return len(elements)
+        print(curNode)
 
 ##      /////////////////////////////    ##
 ##      The following questions will assume a LL with a dummy head Node
@@ -48,26 +46,31 @@ class linkedList:
             self.tail = newNode
 
     def reverseHelper(self, start, end):
-        #high-level: reverse the given region, then reconnect the
-        #given region back into the whole list
         leftAnchor = start.previous #could be null
+        # print(leftAnchor.data)
         rightAnchor = end.next #could be null
-        self.reverse(self.head.next, self.tail)
+        # print(rightAnchor)
+        self.reverse(start, end)
         if (start == self.head):
-            print(self.head, self.head.next, start)
+            # print("ping start")
             self.head = end
         if (end == self.tail):
-            print("ping end")
+            # print("ping end")
             self.tail = start
         #reanchor the nodes
         if leftAnchor:
             leftAnchor.next = end
+            # print('leftanchors', leftAnchor.next.next.next.next.next.next   )
         end.previous = leftAnchor
         if rightAnchor:
              rightAnchor.previous = start
+             # print('anchors', rigtAnchor)
         start.next = rightAnchor
-
-
+        # print('right anchor', start)
+        # print("end.next", end.next)
+        # print("end", end)
+        # print("leftAnchor", leftAnchor, leftAnchor.next)
+        # print('lst head', self.head.next)
 
     def reverse(self, node, end):
         current = node
@@ -85,18 +88,31 @@ class linkedList:
         #since we stopped at the penultimate node, we must also reverse the last
         # node
         end.next = current.previous
-
-
-
-
-
+    def reverseNth(self, n):
+        #given a linked list reverse blocks of n elements in list
+        fastRunner = self.head
+        slowRunner = self.head
+        counter = 1
+        while (fastRunner and fastRunner != self.tail):
+            if counter % n == 0:
+                cont = fastRunner.next
+                # print("in if", slowRunner, fastRunner)
+                self.reverseHelper(slowRunner, fastRunner)
+                slowRunner = cont
+                fastRunner = cont.next
+                continue
+            fastRunner = fastRunner.next
+            # print(fastRunner.data)
+            counter += 1
+        print("lsat swap", slowRunner, self.tail)
+        self.reverseHelper(slowRunner, self.tail)
 
 
 #driver code
 lst = linkedList()
-for x in range (0,5):
+for x in range (0,6):
     lst.insertFront(random.randint(0,10))
 
 lst.display()
-lst.reverseHelper(lst.head.next, lst.tail)
+lst.reverseNth(2)
 lst.display()
