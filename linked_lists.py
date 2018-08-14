@@ -183,9 +183,7 @@ def merge(lst1, lst2):
         if curListPtr.next.data <= otherListPtr.data:
             curListPtr = curListPtr.next
         else:
-            # print('ping', curListPtr.data, otherListPtr.data)
             temp1 = otherListPtr.next
-            # temp2 = curListPtr.next
             temp2 = insertAfterNode(curListPtr, otherListPtr.data)
             otherListPtr = temp1
             curListPtr = temp2
@@ -196,9 +194,31 @@ def merge(lst1, lst2):
             temp2 = insertAfterNode(curListPtr, otherListPtr.data)
             otherListPtr = temp1
             curListPtr = temp2
-
-
     return returnHead
+
+def merge2(lst1, lst2):
+    if lst1 == None:
+        return lst2
+    if lst2 == None:
+        return lst1
+    curListPtr = lst1 if lst1.data < lst2.data else lst2
+    otherListPtr = lst1 if lst1 != curListPtr else lst2
+    returnList = linkedList()
+    while curListPtr and otherListPtr:
+        if curListPtr.data <= otherListPtr.data:
+            returnList.insertBack(curListPtr.data)
+            curListPtr = curListPtr.next
+        else:
+            returnList.insertBack(otherListPtr.data)
+            otherListPtr = otherListPtr.next
+    if curListPtr == None:
+        #join the rest of other list
+        while (otherListPtr != None):
+            returnList.insertBack(otherListPtr.data)
+            otherListPtr = otherListPtr.next
+    return returnList.head
+
+
 
 def length(start):
     curNode = start
@@ -220,12 +240,6 @@ def mergesort(start):
     # print("length", math.floor(len/2))
     left = start
     right = splitHelper(left, math.floor(len/2))
-    # print("left", end =" ")
-    # displayNode(start)
-    # print("")
-    # print("right", end =" ")
-    # displayNode(right)
-    # print("")
     l = mergesort(left)
     r = mergesort(right)
     print("left", end =" ")
@@ -238,7 +252,7 @@ def mergesort(start):
     print("merged ", end="")
     displayNode(temp)
     print("")
-    return merge(l, r)
+    return merge2(l, r)
 
 def displayNode(start):
     curNode = start
