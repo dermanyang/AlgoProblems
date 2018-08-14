@@ -14,9 +14,9 @@ class linkedList:
         while (curNode):
             print(curNode.data, end =" ")
             curNode = curNode.next
-        print(curNode)
 
-##      /////////////////////////////    ##
+
+##      // methods
 
     #insert a node at the front of the list
     def insertFront(self, data):
@@ -99,7 +99,7 @@ class linkedList:
             fastRunner = fastRunner.next
             # print(fastRunner.data)
             counter += 1
-        print("lsat swap", slowRunner, self.tail)
+        # print("lsat swap", slowRunner, self.tail)
         self.reverseHelper(slowRunner, self.tail)
 
     #   every other node (starting from the second node)
@@ -139,74 +139,129 @@ class linkedList:
 
     #given a linked list, return a new linked list starting from splitPoint
     #number of nodes from start
-    def splitHelper(self, start, splitPoint):
-        count = 1
-        curNode = start
-        while (count != splitPoint):
-            curNode = curNode.next
-            count += 1
-        #reached splitPoint
-        print(curNode.data)
-        newHead = curNode.next
-        curNode.next = None
-        newHead.previous = None
-        #make a new linked list, return that head
-        newList = linkedList
-        #insert newhead into new linked list (currently empty)
-        newList.head = newHead
-        #traverse the down new list to find the tail
-        tailNode = newHead
-        while tailNode.next:
-            tailNode = tailNode.next
-        newList.tail = tailNode
-        return newList
+def splitHelper(start, splitPoint):
+    count = 1
+    curNode = start
+    while (count < splitPoint):
+        curNode = curNode.next
+        count += 1
+    #reached splitPoint
+    newHead = curNode.next
+    curNode.next = None
+    newHead.previous = None
+    return newHead
 
-    #insert a new node right after a specified node
+
+##      // mergesort functions
+
+#insert a new node right after a specified node
 def insertAfterNode(node, data):
     newNode = Node(data)
+    # print('ping')
     nextNode = node.next #could be null
     #lhs
     node.next = newNode
     newNode.previous = node
     #rhs
     newNode.next = nextNode
-    if nextNode:
+    if nextNode != None:
         nextNode.previous = newNode
+    return newNode
 
 #given two sorted lists,, return a single sorted list with all
 def merge(lst1, lst2):
     #assign curListPtr to be the list with the lower starting number
-    curListPtr = lst1.head if lst1.head.data < lst2.head.data else lst2.head
-    otherListPtr = lst1.head if lst1.head != curListPtr else lst2.head
-    returnHead = lst1 if lst1.head.data < lst2.head.data else lst2
+    if lst1 == None:
+        return lst2
+    if lst2 == None:
+        return lst1
+    curListPtr = lst1 if lst1.data < lst2.data else lst2
+    otherListPtr = lst1 if lst1 != curListPtr else lst2
+    returnHead = lst1 if lst1.data < lst2.data else lst2
     # curListPtr = curListPtr.next
     while curListPtr.next and otherListPtr:
-        if curListPtr.next.data < otherListPtr.data:
+        if curListPtr.next.data <= otherListPtr.data:
             curListPtr = curListPtr.next
         else:
-            insertAfterNode(curListPtr, otherListPtr.data)
-            otherListPtr = otherListPtr.next
-            curListPtr = curListPtr.next
+            # print('ping', curListPtr.data, otherListPtr.data)
+            temp1 = otherListPtr.next
+            # temp2 = curListPtr.next
+            temp2 = insertAfterNode(curListPtr, otherListPtr.data)
+            otherListPtr = temp1
+            curListPtr = temp2
     if curListPtr.next == None:
         #join the rest of other list
-        while (otherListPtr != None):
-            insertAfterNode(curListPtr, otherListPtr.data)
-            curListPtr = curListPtr.next
-            otherListPtr = otherListPtr.next
+        while (curListPtr and otherListPtr != None):
+            temp1 = otherListPtr.next
+            temp2 = insertAfterNode(curListPtr, otherListPtr.data)
+            otherListPtr = temp1
+            curListPtr = temp2
+
+
     return returnHead
 
+def length(start):
+    curNode = start
+    count = 0
+    while curNode :
+        count += 1
+        curNode = curNode.next
+    return count
 
-#driver code
+import math
+
+def mergesort(start):
+    if start == None:
+        return Node(-1)
+    if length(start) == 1:
+        return start
+        #list length 1, already sorted, return
+    len = length(start)
+    # print("length", math.floor(len/2))
+    left = start
+    right = splitHelper(left, math.floor(len/2))
+    # print("left", end =" ")
+    # displayNode(start)
+    # print("")
+    # print("right", end =" ")
+    # displayNode(right)
+    # print("")
+    l = mergesort(left)
+    r = mergesort(right)
+    print("left", end =" ")
+    displayNode(l)
+    print("")
+    print("right", end =" ")
+    displayNode(r)
+    print("")
+    temp = merge(l,r)
+    print("merged ", end="")
+    displayNode(temp)
+    print("")
+    return merge(l, r)
+
+def displayNode(start):
+    curNode = start
+    while curNode:
+        print (curNode.data, end=" ")
+        curNode = curNode.next
+
+# driver code
 lst1 = linkedList()
 lst2 = linkedList()
-for x in range (0,1):
-    lst1.insertBack(2*x + 1)
-
-for x in range(2,4):
-    lst2.insertBack(x)
+    # lst1.insertBack(x)
+lst1.insertBack(5)
+lst1.insertBack(9)
+# lst1.insertBack(9)
+lst1.insertBack(2)
+lst1.insertBack(3)
+# lst2.insertBack(3)
 
 lst1.display()
-lst2.display()
-
-lst3 = merge(lst1, lst2)
-lst3.display()
+print("")
+# lst2.display()
+# print("")
+# temp = merge(lst1.head, lst2.head)
+# displayNode(temp)
+temp = mergesort(lst1.head)
+displayNode(temp)
