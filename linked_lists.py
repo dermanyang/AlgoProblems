@@ -167,35 +167,7 @@ def insertAfterNode(node, data):
     if nextNode != None:
         nextNode.previous = newNode
     return newNode
-
-#given two sorted lists,, return a single sorted list with all
-def merge(lst1, lst2):
-    #assign curListPtr to be the list with the lower starting number
-    if lst1 == None:
-        return lst2
-    if lst2 == None:
-        return lst1
-    curListPtr = lst1 if lst1.data < lst2.data else lst2
-    otherListPtr = lst1 if lst1 != curListPtr else lst2
-    returnHead = lst1 if lst1.data < lst2.data else lst2
-    # curListPtr = curListPtr.next
-    while curListPtr.next and otherListPtr:
-        if curListPtr.next.data <= otherListPtr.data:
-            curListPtr = curListPtr.next
-        else:
-            temp1 = otherListPtr.next
-            temp2 = insertAfterNode(curListPtr, otherListPtr.data)
-            otherListPtr = temp1
-            curListPtr = temp2
-    if curListPtr.next == None:
-        #join the rest of other list
-        while (curListPtr and otherListPtr != None):
-            temp1 = otherListPtr.next
-            temp2 = insertAfterNode(curListPtr, otherListPtr.data)
-            otherListPtr = temp1
-            curListPtr = temp2
-    return returnHead
-
+    
 def merge2(lst1, lst2):
     if lst1 == None:
         return lst2
