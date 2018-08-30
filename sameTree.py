@@ -30,7 +30,7 @@
 # Output: false
 
 # High level idea :
-# Traverse both trees simultaneously and compare nodes at each revusrive call. Consider different cases:
+# Traverse both trees simultaneously and compare nodes at each recursive call. Consider different cases:
 #   Case 1: Both nodes at null => Good
 #   Case 2: Only one node is null => Bad
 #   Case 3: Both nodes not null, but values are different => Bad
