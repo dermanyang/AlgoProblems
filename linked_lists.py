@@ -9,18 +9,21 @@ class linkedList:
     def __init__(self):
         self.head = None
         self.tail = None
+        self.length = 0
     def display(self):
+        elements = []
         curNode = self.head
-        while (curNode):
-            print(curNode.data, end =" ")
+        while curNode:
+            elements.append(curNode.data)
             curNode = curNode.next
+        print (elements, "length=", len(elements))
+        return len(elements)
 
+##      /////////////////////////////    ##
+##      The following questions will assume a LL with a dummy head Node
 
-##      // methods
-
-    #insert a node at the front of the list
     def insertFront(self, data):
-        #empty case: head and tail both point to the new node
+        #empty BASECASE
         if not self.head:
             newNode = Node(data)
             self.head = newNode
@@ -32,35 +35,32 @@ class linkedList:
             newNode.next = self.head
             self.head = newNode
         self.length += 1
-
-    #insert a node at the end of the list
     def insertBack(self, data):
         #empty basecase
-        if not self.head:
+        if not self:
             newNode = Node(data)
             self.head = newNode
             self.tail = newNode
-        #non-empty basecase
         else:
             newNode = Node(data)
             self.tail.next = newNode
             newNode.previous = self.tail
             self.tail = newNode
 
-    #reverse a linked list from a start node and a beginnig node
     def reverseHelper(self, start, end):
-        #determine anchors. these are the nodes immediately to the left / right of the reversed region
+        #high-level: reverse the given region, then reconnect the
+        #given region back into the whole list
         leftAnchor = start.previous #could be null
         rightAnchor = end.next #could be null
-        #call to reverse
-        self.reverse(start, end)
-        #deal with edge cases. if either ends of the reversed region are the head/tail, we must
-        #update the head/tail respectively
+        print("start, head", start, self.head)
+        self.reverse(self.head, self.tail)
         if (start == self.head):
+            print("ping start")
             self.head = end
         if (end == self.tail):
+            print("ping end")
             self.tail = start
-        #reanchor the nodes. reattach the reversed area back with the anchors
+        #reanchor the nodes
         if leftAnchor:
             leftAnchor.next = end
         end.previous = leftAnchor
@@ -68,9 +68,9 @@ class linkedList:
              rightAnchor.previous = start
         start.next = rightAnchor
 
-    #reverse an entire linked list
     def reverse(self, node, end):
         current = node
+        # print ("start, end", node, end)
         next = None
         prev = None
         while current != end:
@@ -79,175 +79,37 @@ class linkedList:
             current.previous = next
             current.next = prev
             #iterate
+            # current.next and print(current.next.data, end=" ")
             current = next
         #since we stopped at the penultimate node, we must also reverse the last
         # node
         end.next = current.previous
-
-    #given a linked list reverse blocks of n elements in list
     def reverseNth(self, n):
+        #given a linked list reverse blocks of n elements in list
         fastRunner = self.head
         slowRunner = self.head
         counter = 1
-        while (fastRunner and fastRunner != self.tail):
-            if counter % n == 0:
-                cont = fastRunner.next
+        while (fastRunner != self.tail):
+            if counterPtr % n == 0:
                 self.reverseHelper(slowRunner, fastRunner)
-                slowRunner = cont
-                fastRunner = cont.next
-                continue
+                slowRunner = fastRunner
             fastRunner = fastRunner.next
-            # print(fastRunner.data)
             counter += 1
-        # print("lsat swap", slowRunner, self.tail)
-        self.reverseHelper(slowRunner, self.tail)
-
-    #   every other node (starting from the second node)
-    #   is removed from the list and appended to the back (new tail)
-    #   do this until the next node to be removed is the tail or null
-    def waterfall(self):
-        index = 1
-        curNode = self.head
-        while curNode and curNode != self.tail:
-            if index % 2 == 0:
-                temp = curNode.next
-                self.insertBack(curNode.data)
-                self.remove(curNode)
-                curNode = temp
-                index += 1
-                continue
-                # return
-            index += 1
-            curNode = curNode.next
-
-    #given a node, remove it from the linked list
-    def remove(self, cur):
-        #if front of list
-        if cur == self.head:
-            self.head = cur.next
-            self.head.previous = None
-            return
-        #if on tail of list
-        if cur == self.tail:
-            self.tail = cur.previous
-            cur.previous.next = None
-            return
-        #else, if in torso
-        prev = cur.previous
-        prev.next = cur.next
-        cur.next.previous = prev
-
-    #given a linked list, return a new linked list starting from splitPoint
-    #number of nodes from start
-def splitHelper(start, splitPoint):
-    count = 1
-    curNode = start
-    while (count < splitPoint):
-        curNode = curNode.next
-        count += 1
-    #reached splitPoint
-    newHead = curNode.next
-    curNode.next = None
-    newHead.previous = None
-    return newHead
-
-
-##      // mergesort functions
-
-#insert a new node right after a specified node
-def insertAfterNode(node, data):
-    newNode = Node(data)
-    # print('ping')
-    nextNode = node.next #could be null
-    #lhs
-    node.next = newNode
-    newNode.previous = node
-    #rhs
-    newNode.next = nextNode
-    if nextNode != None:
-        nextNode.previous = newNode
-    return newNode
-    
-def merge2(lst1, lst2):
-    if lst1 == None:
-        return lst2
-    if lst2 == None:
-        return lst1
-    curListPtr = lst1 if lst1.data < lst2.data else lst2
-    otherListPtr = lst1 if lst1 != curListPtr else lst2
-    returnList = linkedList()
-    while curListPtr and otherListPtr:
-        if curListPtr.data <= otherListPtr.data:
-            returnList.insertBack(curListPtr.data)
-            curListPtr = curListPtr.next
-        else:
-            returnList.insertBack(otherListPtr.data)
-            otherListPtr = otherListPtr.next
-    if curListPtr == None:
-        #join the rest of other list
-        while (otherListPtr != None):
-            returnList.insertBack(otherListPtr.data)
-            otherListPtr = otherListPtr.next
-    return returnList.head
+        # self.reverseHelper(slowRunner, self.tail)
 
 
 
-def length(start):
-    curNode = start
-    count = 0
-    while curNode :
-        count += 1
-        curNode = curNode.next
-    return count
 
-import math
 
-def mergesort(start):
-    if start == None:
-        return Node(-1)
-    if length(start) == 1:
-        return start
-        #list length 1, already sorted, return
-    len = length(start)
-    # print("length", math.floor(len/2))
-    left = start
-    right = splitHelper(left, math.floor(len/2))
-    l = mergesort(left)
-    r = mergesort(right)
-    print("left", end =" ")
-    displayNode(l)
-    print("")
-    print("right", end =" ")
-    displayNode(r)
-    print("")
-    temp = merge(l,r)
-    print("merged ", end="")
-    displayNode(temp)
-    print("")
-    return merge2(l, r)
 
-def displayNode(start):
-    curNode = start
-    while curNode:
-        print (curNode.data, end=" ")
-        curNode = curNode.next
 
-# driver code
-lst1 = linkedList()
-lst2 = linkedList()
-    # lst1.insertBack(x)
-lst1.insertBack(5)
-lst1.insertBack(9)
-# lst1.insertBack(9)
-lst1.insertBack(2)
-lst1.insertBack(3)
-# lst2.insertBack(3)
 
-lst1.display()
-print("")
-# lst2.display()
-# print("")
-# temp = merge(lst1.head, lst2.head)
-# displayNode(temp)
-temp = mergesort(lst1.head)
-displayNode(temp)
+
+#driver code
+lst = linkedList()
+for x in range (0,6):
+    lst.insertFront(random.randint(0,10))
+
+lst.display()
+lst.reverseHelper(lst.head, lst.tail)
+lst.display()
